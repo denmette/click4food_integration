@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-from tkinter import NO
 from typing import Any
 
 import voluptuous as vol
@@ -17,12 +16,10 @@ from homeassistant.const import (
     CONF_USERNAME,
 )
 from homeassistant.core import (
-    HomeAssistant,
     callback,
 )
 from homeassistant.helpers import selector
 from homeassistant.helpers.aiohttp_client import async_create_clientsession
-from slugify import slugify
 
 from .api import (
     Click4FoodApiClient,
@@ -33,45 +30,22 @@ from .api import (
 from .const import DOMAIN, LOGGER
 
 
-def _get_data_schema(
-    hass: HomeAssistant, config_entry: ConfigEntry | None = None
-) -> vol.Schema:
+def _get_data_schema(config_entry: ConfigEntry | None = None) -> vol.Schema:
     """Get a schema with default values."""
-    # If tracking click4food or no config entry is passed in
-    if config_entry is None or config_entry.data.get(DOMAIN, False):
-        return vol.Schema(
-            {
-                vol.Required(
-                    CONF_USERNAME,
-                    default=({}).get(CONF_USERNAME, vol.UNDEFINED),
-                ): selector.TextSelector(
-                    selector.TextSelectorConfig(
-                        type=selector.TextSelectorType.TEXT,
-                    ),
-                ),
-                vol.Required(CONF_PASSWORD): selector.TextSelector(
-                    selector.TextSelectorConfig(
-                        type=selector.TextSelectorType.PASSWORD,
-                    ),
-                ),
-            }
-        )
-    # Default values come from config entry
+    default_username = config_entry.data.get(CONF_USERNAME) if config_entry else None
+    default_password = config_entry.data.get(CONF_PASSWORD) if config_entry else None
+
     return vol.Schema(
         {
             vol.Required(
-                CONF_USERNAME, default=config_entry.data.get(CONF_USERNAME)
+                CONF_USERNAME, default=default_username
             ): selector.TextSelector(
-                selector.TextSelectorConfig(
-                    type=selector.TextSelectorType.TEXT,
-                ),
+                selector.TextSelectorConfig(type=selector.TextSelectorType.TEXT)
             ),
             vol.Required(
-                CONF_PASSWORD, default=config_entry.data.get(CONF_PASSWORD)
+                CONF_PASSWORD, default=default_password
             ): selector.TextSelector(
-                selector.TextSelectorConfig(
-                    type=selector.TextSelectorType.PASSWORD,
-                ),
+                selector.TextSelectorConfig(type=selector.TextSelectorType.PASSWORD)
             ),
         }
     )
@@ -104,21 +78,16 @@ class Click4FoodFlowHandler(ConfigFlow, domain=DOMAIN):
                 LOGGER.exception(exception)
                 _errors["base"] = "unknown"
             else:
-                await self.async_set_unique_id(
-                    ## Do NOT use this in production code
-                    ## The unique_id should never be something that can change
-                    ## https://developers.home-assistant.io/docs/config_entries_config_flow_handler#unique-ids
-                    unique_id=DOMAIN
-                )
+                await self.async_set_unique_id(unique_id=DOMAIN)
                 self._abort_if_unique_id_configured()
                 return self.async_create_entry(
-                    title=user_input[CONF_USERNAME],
+                    title="Click4Food - Compass Group",
                     data=user_input,
                 )
 
         return self.async_show_form(
             step_id="user",
-            data_schema=_get_data_schema(self.hass),
+            data_schema=_get_data_schema(),
             errors=_errors,
         )
 
@@ -137,7 +106,7 @@ class Click4FoodFlowHandler(ConfigFlow, domain=DOMAIN):
             password=password,
             session=async_create_clientsession(self.hass),
         )
-        await client.async_get_data()
+        await client.login()
 
 
 class Click4FoodOptionsFlowHandler(OptionsFlow):
@@ -162,5 +131,5 @@ class Click4FoodOptionsFlowHandler(OptionsFlow):
 
         return self.async_show_form(
             step_id="init",
-            data_schema=_get_data_schema(self.hass, config_entry=self.config_entry),
+            data_schema=_get_data_schema(config_entry=self.config_entry),
         )

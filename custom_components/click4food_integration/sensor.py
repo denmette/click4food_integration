@@ -18,8 +18,9 @@ if TYPE_CHECKING:
 ENTITY_DESCRIPTIONS = (
     SensorEntityDescription(
         key="click4food_integration",
-        name="Integration Sensor",
-        icon="mdi:format-quote-close",
+        name="Total Amount Left",
+        icon="mdi:currency-eur",
+        native_unit_of_measurement="€",
     ),
 )
 
@@ -40,7 +41,7 @@ async def async_setup_entry(
 
 
 class Click4FoodSensor(Click4FoodEntity, SensorEntity):
-    """click4food_integration Sensor class."""
+    """Click4Food Sensor class."""
 
     def __init__(
         self,
@@ -54,4 +55,4 @@ class Click4FoodSensor(Click4FoodEntity, SensorEntity):
     @property
     def native_value(self) -> str | None:
         """Return the native value of the sensor."""
-        return self.coordinator.data.get("body")
+        return self.coordinator.running_total

@@ -30,3 +30,11 @@ class Click4FoodDataUpdateCoordinator(DataUpdateCoordinator):
             raise ConfigEntryAuthFailed(exception) from exception
         except Click4FoodApiClientError as exception:
             raise UpdateFailed(exception) from exception
+
+    @property
+    def running_total(self) -> str | None:
+        """Return the running total from the data."""
+        qry_details = self.data.get("QRYDETAILSGROUPED", [])
+        if qry_details and "KEY" in qry_details[0]:
+            return qry_details[0]["KEY"].get("RUNNING_TOTAL", "No Data")
+        return "No Data"
