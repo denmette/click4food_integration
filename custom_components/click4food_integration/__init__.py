@@ -1,5 +1,5 @@
 """
-Custom integration to integrate click4food_integration with Home Assistant.
+Custom integration to integrate Click4Food with Home Assistant.
 
 For more details about this integration, please refer to
 https://github.com/denmette/click4food_integration
@@ -16,7 +16,7 @@ from homeassistant.loader import async_get_loaded_integration
 
 from .api import Click4FoodApiClient
 from .const import DOMAIN, LOGGER
-from .coordinator import BlueprintDataUpdateCoordinator
+from .coordinator import Click4FoodDataUpdateCoordinator
 from .data import Click4FoodData
 
 if TYPE_CHECKING:
@@ -35,11 +35,11 @@ async def async_setup_entry(
     entry: Click4FoodConfigEntry,
 ) -> bool:
     """Set up this integration using UI."""
-    coordinator = BlueprintDataUpdateCoordinator(
+    coordinator = Click4FoodDataUpdateCoordinator(
         hass=hass,
         logger=LOGGER,
         name=DOMAIN,
-        update_interval=timedelta(hours=1),
+        update_interval=timedelta(seconds=30),
     )
     entry.runtime_data = Click4FoodData(
         client=Click4FoodApiClient(

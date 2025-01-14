@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from homeassistant.loader import Integration
 
     from .api import Click4FoodApiClient
-    from .coordinator import BlueprintDataUpdateCoordinator
+    from .coordinator import Click4FoodDataUpdateCoordinator
 
 
 type Click4FoodConfigEntry = ConfigEntry[Click4FoodData]
@@ -18,8 +18,8 @@ type Click4FoodConfigEntry = ConfigEntry[Click4FoodData]
 
 @dataclass
 class Click4FoodData:
-    """Data for the Blueprint integration."""
+    """Data for the Click4Food integration."""
 
     client: Click4FoodApiClient
-    coordinator: BlueprintDataUpdateCoordinator
+    coordinator: Click4FoodDataUpdateCoordinator
     integration: Integration

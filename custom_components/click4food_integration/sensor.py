@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
     from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-    from .coordinator import BlueprintDataUpdateCoordinator
+    from .coordinator import Click4FoodDataUpdateCoordinator
     from .data import Click4FoodConfigEntry
 
 ENTITY_DESCRIPTIONS = (
@@ -44,7 +44,7 @@ class Click4FoodSensor(Click4FoodEntity, SensorEntity):
 
     def __init__(
         self,
-        coordinator: BlueprintDataUpdateCoordinator,
+        coordinator: Click4FoodDataUpdateCoordinator,
         entity_description: SensorEntityDescription,
     ) -> None:
         """Initialize the sensor class."""
