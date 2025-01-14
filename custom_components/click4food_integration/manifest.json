@@ -1,6 +1,6 @@
 {
   "domain": "click4food_integration",
-  "name": "Click 4 Food Integration",
+  "name": "Click4Food -  Compass Group",
   "codeowners": [
     "@denmette"
   ],
@@ -8,5 +8,9 @@
   "documentation": "https://github.com/denmette/click4food_integration",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/denmette/click4food_integration/issues",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "requirements": [
+    "beautifulsoup4",
+    "aiohttp"
+  ]
 }
