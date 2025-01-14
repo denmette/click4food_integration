@@ -1,4 +1,4 @@
-"""Custom types for integration_blueprint."""
+"""Custom types for click4food_integration."""
 
 from __future__ import annotations
 
